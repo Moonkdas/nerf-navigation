@@ -1,0 +1,112 @@
+record_video: no
+seed: 2
+task_name: "Nerf_Navigation"
+name: "First init"
+environment:
+  Domain_Randomization: False
+  MultiObject: True
+  Rollout: False
+  position_goal: False
+  discrete_action: False
+  seed: 2
+  render: False
+  num_envs: 10
+  eval_every_n: 200
+  num_threads: 30
+  simulation_dt: 0.0025
+  control_dt: 0.2
+  #  low_level_control_dt: 0.005
+  low_level_control_dt: 0.01
+  max_time: 8.0
+  entropy_coeff: 1e-2
+  nSamples_: 300
+  nHorizon_: 30
+  obj_mass: 10.0
+  bound_ratio: 0.5
+  discrete:
+    radial: 1
+    tangential: 72
+  reward:
+    commandsmoothRewardCoeff_: 3
+    commandsmooth2RewardCoeff_: 3
+    #    commandRewardCoeff_: 0
+    torque_reward_coeff: 0
+    #    torque_reward_coeff: 0
+    towardObjectRewardCoeff_: 1
+    stayObjectRewardCoeff_: 1
+    towardTargetRewardCoeff_: 2
+    stayTargetRewardCoeff_: 4
+    stayObjectHeadingRewardCoeff_ : 1
+    stayTargetHeadingRewardCoeff_ : 4
+    stayTargetHeadingRewardCoeff_alpha_ : 1
+    stayTargetRewardCoeff_alpha_ : 10
+    stayTargetExtrinsicRewardCoeff_: 10
+  curriculum:
+    initial_factor: .2
+    decay_factor: 0.97
+  hierarchical: True
+  dimension:
+    proprioceptiveDim_: 38
+    exteroceptiveDim_: 0
+    inertialparamDim_: 0
+    dynamicsInfoDim_: 0
+    dynamicsPredictDim_: 0
+    dynamicsInputDim_: 0
+    historyNum_: 21
+    actionDim_: 3
+  ROA_dimension:
+    exteroceptiveDim_: 28
+
+PPO:
+  num_learning_epoch: 4
+  num_mini_batches: 4
+
+MPPI:
+  nSamples_: 300
+  nHorizon_: 30
+  gamma_: 1e-1
+  use_dynamics_: False
+
+encoder:
+  proprioceptivelatentDim_: 16
+  exteroceptivelatentDim_: 32
+  actionlatentDim_: 4
+
+Transformer:
+  dim_feedforward_: 256
+  n_head_: 8
+  layerNum_: 8
+  d_model: 48
+
+LSTM:
+  hiddendim_: 64
+  batchNum_: 1
+  numLayer_: 2
+  isDecouple_: False
+
+architecture:
+  policy_net: [128, 64]
+  value_net: [128, 64]
+
+  encoding:
+    policy_net: [ 128, 64 ]
+    value_net: [ 128, 64 ]
+    pro_encoder_net: [128, 64] # 9 x 4
+    ext_encoder_net: [256, 128, 64] # 25 x 4
+    act_encoder_net: [32, 32] # 2 x 4
+    module_dim: 32
+
+  estimator:
+    net: [256, 128]
+
+  obj_f_dynamics:
+    net: [256, 128, 64]
+
+  latent_f_dynamics:
+    net: [256, 128, 64]
+
+  obs_f_dynamics:
+    net: [256, 128]
+
+  Decoder:
+    net: [512, 256, 128]
